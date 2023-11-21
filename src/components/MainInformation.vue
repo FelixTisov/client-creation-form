@@ -60,7 +60,6 @@
         v-model="v$.mainInformation.birthDate.$model"
         type="date"
         id="birthdate"
-        onfocus="(this.type='date')"
       />
       <div class="form-group-footer">
         <span v-if="v$.mainInformation.birthDate.$error" class="error-message"

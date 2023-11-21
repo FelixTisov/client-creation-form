@@ -249,6 +249,7 @@ export default {
               font-weight: 400
               outline: none
               border: none
+              -webkit-appearance: none !important
               background-color: #fff
               box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.2)
 
