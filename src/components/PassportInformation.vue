@@ -74,12 +74,7 @@
     <!-- Дата выдачи -->
     <div class="form-group">
       <label>Дата выдачи*</label>
-      <input
-        v-model.trim="passport.issueDate"
-        type="date"
-        id="birthdate"
-        onfocus="(this.type='date')"
-      />
+      <input v-model.trim="passport.issueDate" type="date" id="birthdate" />
       <div class="form-group-footer">
         <span v-if="v$.passport.issueDate.$error" class="error-message"
           >Обязательное поле</span
