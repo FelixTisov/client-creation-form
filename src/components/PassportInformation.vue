@@ -1,18 +1,41 @@
 <template>
   <div class="passport-information">
-    <label>Паспортные данные клиента</label>
     <!-- Тип документа -->
+    <div class="form-group label-group">
+      <label>Тип документа*</label>
+    </div>
     <div class="form-group">
-      <select v-model="passport.documentType">
-        <option value="Паспорт">Паспорт</option>
-        <option value="Свидетельство о рождении">
-          Свидетельство о рождении
-        </option>
-        <option value="Вод. удостоверение">Вод. удостоверение</option>
-      </select>
-      <span v-if="!v$.passport.documentType.required" class="error-message"
-        >Выберите тип докумениа</span
-      >
+      <div class="dropdown-container">
+        <DropDown @optionChanged="changeDocumentType">
+          <template
+            v-slot:dropdown-items="{
+              clickOption: { changeOption },
+              option: { currentOption },
+            }"
+          >
+            <DropdownItem
+              title="Паспорт"
+              :option="currentOption"
+              @clickOption="changeOption"
+            />
+            <DropdownItem
+              title="Свидетельство о рождении"
+              :option="currentOption"
+              @clickOption="changeOption"
+            />
+            <DropdownItem
+              title="Вод. удостоверение"
+              :option="currentOption"
+              @clickOption="changeOption"
+            />
+          </template>
+        </DropDown>
+      </div>
+      <div class="form-group-footer">
+        <span v-if="v$.passport.documentType.$error" class="error-message"
+          >Обязательное поле</span
+        >
+      </div>
     </div>
 
     <!-- Серия -->
@@ -23,6 +46,7 @@
         id="series"
         placeholder="Серия"
       />
+      <div class="form-group-footer"></div>
     </div>
 
     <!-- Номер -->
@@ -33,6 +57,7 @@
         id="number"
         placeholder="Номер"
       />
+      <div class="form-group-footer"></div>
     </div>
 
     <!-- Кем выдан -->
@@ -43,35 +68,36 @@
         id="issuedBy"
         placeholder="Кем выдан"
       />
+      <div class="form-group-footer"></div>
     </div>
 
     <!-- Дата выдачи -->
     <div class="form-group">
-      <label>Дата выдачи</label>
+      <label>Дата выдачи*</label>
       <input
         v-model.trim="passport.issueDate"
         type="date"
         id="birthdate"
-        required
         onfocus="(this.type='date')"
       />
-      <span v-if="!v$.passport.issueDate.required" class="error-message"
-        >Поле обязательно для заполнения</span
-      >
-    </div>
-
-    <div class="comment-container">
-      <p>* - обязательное поле</p>
+      <div class="form-group-footer">
+        <span v-if="v$.passport.issueDate.$error" class="error-message"
+          >Обязательное поле</span
+        >
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { useVuelidate } from '@vuelidate/core'
-import { required, email } from '@vuelidate/validators'
+import { required } from '@vuelidate/validators'
+import DropDown from './dropdown/DropDown.vue'
+import DropdownItem from './dropdown/DropdownItem.vue'
 
 export default {
   name: 'PassportInformation',
+  components: { DropDown, DropdownItem },
   setup() {
     return { v$: useVuelidate() }
   },
@@ -95,6 +121,11 @@ export default {
         issueDate: { required },
       },
     }
+  },
+  methods: {
+    changeDocumentType(option) {
+      this.passport.documentType = option
+    },
   },
 }
 </script>

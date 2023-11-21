@@ -7,40 +7,47 @@
         <div class="form-group">
           <input
             @blur="v$.mainInformation.lastName.$touch"
-            v-model.trim="v$.mainInformation.lastName.$model"
+            v-model="v$.mainInformation.lastName.$model"
             type="text"
             id="lastName"
-            required
             placeholder="Фамилия*"
           />
-          <span v-if="v$.mainInformation.lastName.$error" class="error-message"
-            >Обязательное поле</span
-          >
+          <div class="form-group-footer">
+            <span
+              v-if="v$.mainInformation.lastName.$error"
+              class="error-message"
+              >Обязательное поле</span
+            >
+          </div>
         </div>
 
         <!-- Имя -->
         <div class="form-group">
           <input
             @blur="v$.mainInformation.firstName.$touch"
-            v-model.trim="v$.mainInformation.firstName.$model"
+            v-model="v$.mainInformation.firstName.$model"
             type="text"
             id="firstName"
-            required
             placeholder="Имя*"
           />
-          <span v-if="v$.mainInformation.firstName.$error" class="error-message"
-            >Обязательное поле</span
-          >
+          <div class="form-group-footer">
+            <span
+              v-if="v$.mainInformation.firstName.$error"
+              class="error-message"
+              >Обязательное поле</span
+            >
+          </div>
         </div>
 
         <!-- Отчество -->
         <div class="form-group">
           <input
-            v-model.trim="mainInformation.middleName"
+            v-model="mainInformation.middleName"
             type="text"
             id="middleName"
             placeholder="Отчество"
           />
+          <div class="form-group-footer"></div>
         </div>
       </div>
     </div>
@@ -50,15 +57,16 @@
       <label>Дата рождения*</label>
       <input
         @blur="v$.mainInformation.birthDate.$touch"
-        v-model.trim="v$.mainInformation.birthDate.$model"
+        v-model="v$.mainInformation.birthDate.$model"
         type="date"
         id="birthdate"
-        required
         onfocus="(this.type='date')"
       />
-      <span v-if="v$.mainInformation.birthDate.$error" class="error-message"
-        >Обязательное поле</span
-      >
+      <div class="form-group-footer">
+        <span v-if="v$.mainInformation.birthDate.$error" class="error-message"
+          >Обязательное поле</span
+        >
+      </div>
     </div>
 
     <!-- Номер телефона -->
@@ -66,54 +74,106 @@
       <label>Номер телефона*</label>
       <input
         @blur="v$.mainInformation.phoneNumber.$touch"
-        v-model.trim="formattedPhoneNumber"
-        required
+        v-model="formattedPhoneNumber"
         type="tel"
         id="phoneNumber"
         placeholder="+7 (___) ___ - ___"
       />
-      <!-- <span v-if="v$.mainInformation.phoneNumber.$error" class="error-message"
+      <div class="form-group-footer">
+        <!-- <span v-if="v$.mainInformation.phoneNumber.$error" class="error-message"
         >Обязательное поле</span
       > -->
-      <span v-if="v$.mainInformation.phoneNumber.$error" class="error-message"
-        >Номер телефона должен начинаться с 7 и содержать 11 цифр</span
-      >
+        <span v-if="v$.mainInformation.phoneNumber.$error" class="error-message"
+          >Номер телефона должен начинаться с 7 и содержать 11 цифр</span
+        >
+      </div>
     </div>
 
     <!-- Пол -->
     <div class="form-group">
       <label>Пол</label>
       <input
-        v-model.trim="mainInformation.gender"
+        v-model="mainInformation.gender"
         type="text"
         id="gender"
         placeholder="Мужской"
       />
+      <div class="form-group-footer"></div>
     </div>
 
     <!-- Группа клиентов -->
     <div class="form-group">
-      <label>Группа клиента*</label>
-      <select v-model="v$.mainInformation.clientGroup.$model" multiple>
-        <option value="VIP">VIP</option>
-        <option value="Проблемные">Проблемные</option>
-        <option value="ОМС">ОМС</option>
-      </select>
-      <span
-        v-if="!v$.mainInformation.clientGroup.required"
-        class="error-message"
-        >Выберите хотя бы одну группу</span
-      >
+      <label>Группа клиентов*</label>
+      <div class="dropdown-container">
+        <DropDown
+          @optionChanged="changeClientGroup"
+          type="multiple"
+          :currentValue="mainInformation.clientGroup"
+        >
+          <template
+            v-slot:dropdown-items="{
+              clickOption: { changeOption },
+              option: { currentOption },
+            }"
+          >
+            <DropdownItem
+              type="multiple"
+              title="VIP"
+              :option="currentOption"
+              @clickOption="changeOption"
+            />
+            <DropdownItem
+              type="multiple"
+              title="Проблемные"
+              :option="currentOption"
+              @clickOption="changeOption"
+            />
+            <DropdownItem
+              type="multiple"
+              title="ОМС"
+              :option="currentOption"
+              @clickOption="changeOption"
+            />
+          </template>
+        </DropDown>
+      </div>
+      <div class="form-group-footer">
+        <span v-if="v$.mainInformation.clientGroup.$error" class="error-message"
+          >Обязательное поле</span
+        >
+      </div>
     </div>
 
     <!-- Лечащий врач -->
     <div class="form-group">
       <label>Лечащий врач</label>
-      <select v-model="mainInformation.attendingDoctor">
-        <option value="Иванов">Иванов</option>
-        <option value="Захаров">Захаров</option>
-        <option value="Чернышева">Чернышева</option>
-      </select>
+      <div class="dropdown-container">
+        <DropDown @optionChanged="changeAttendingDoctor">
+          <template
+            v-slot:dropdown-items="{
+              clickOption: { changeOption },
+              option: { currentOption },
+            }"
+          >
+            <DropdownItem
+              title="Иванов"
+              :option="currentOption"
+              @clickOption="changeOption"
+            />
+            <DropdownItem
+              title="Захаров"
+              :option="currentOption"
+              @clickOption="changeOption"
+            />
+            <DropdownItem
+              title="Чернышева"
+              :option="currentOption"
+              @clickOption="changeOption"
+            />
+          </template>
+        </DropDown>
+      </div>
+      <div class="form-group-footer"></div>
     </div>
 
     <!-- Не отправлять СМС -->
@@ -130,22 +190,21 @@
       </div>
       <label class="checkbox-title" for="doNotSendSMS">Не отправлять СМС</label>
     </div>
-
-    <div class="comment-container">
-      <p>* - обязательное поле</p>
-    </div>
   </div>
 </template>
 
 <script>
 import { useVuelidate } from '@vuelidate/core'
-import { required, minLength, maxLength, email } from '@vuelidate/validators'
+import { required, minLength, maxLength } from '@vuelidate/validators'
+import DropDown from './dropdown/DropDown.vue'
+import DropdownItem from './dropdown/DropdownItem.vue'
 
 export default {
   name: 'MainInformation',
   setup() {
     return { v$: useVuelidate() }
   },
+  components: { DropDown, DropdownItem },
   data() {
     return {
       mainInformation: {
@@ -159,7 +218,6 @@ export default {
         attendingDoctor: '', // Лечащий врач
         doNotSendSMS: false, // Не отправлять СМС
       },
-      isSuccess: false,
     }
   },
   validations() {
@@ -177,6 +235,16 @@ export default {
       },
     }
   },
+  methods: {
+    changeAttendingDoctor(option) {
+      this.mainInformation.attendingDoctor = option
+    },
+    changeClientGroup(option) {
+      const index = this.mainInformation.clientGroup.indexOf(option)
+      if (index === -1) this.mainInformation.clientGroup.push(option)
+      else this.mainInformation.clientGroup.splice(index, 1)
+    },
+  },
   computed: {
     // Форматирование номера телефона
     formattedPhoneNumber: {
@@ -184,20 +252,22 @@ export default {
         return this.mainInformation.phoneNumber
       },
       set(value) {
-        const newValue = value.replace(/[^\d]/g, '') // Удаляем все символы, кроме цифр
-        let formatted = '+7 (' + newValue.substring(1, 4)
+        if (this.mainInformation.phoneNumber.length < 18) {
+          const newValue = value.replace(/[^\d]/g, '') // Удаляем все символы, кроме цифр
+          let formatted = '+7 (' + newValue.substring(1, 4)
 
-        if (newValue.length > 3) {
-          formatted += ') ' + newValue.substring(4, 7)
-        }
-        if (newValue.length > 6) {
-          formatted += ' ' + newValue.substring(7, 9)
-        }
-        if (newValue.length > 8) {
-          formatted += '-' + newValue.substring(9)
-        }
+          if (newValue.length > 3) {
+            formatted += ') ' + newValue.substring(4, 7)
+          }
+          if (newValue.length > 6) {
+            formatted += ' ' + newValue.substring(7, 9)
+          }
+          if (newValue.length > 8) {
+            formatted += '-' + newValue.substring(9)
+          }
 
-        this.mainInformation.phoneNumber = formatted
+          this.mainInformation.phoneNumber = formatted
+        }
       },
     },
   },
@@ -208,70 +278,74 @@ export default {
 .wrapper
  .form-container
   .client-form
-    .client-name-container
-      display: flex
-      min-width: 90%
-      max-width: 90%
-      flex-direction: column
-      align-items: flex-start
-      justify-content: center
-      .client-name
-        display: flex
-        width: 100%
-        align-items: center
-        justify-content: space-between
+    .curentPageContainer
+      .main-information
+        .client-name-container
+          display: flex
+          min-width: 90%
+          max-width: 90%
+          flex-direction: column
+          align-items: flex-start
+          justify-content: center
+          .client-name
+            display: flex
+            width: 100%
+            align-items: center
+            justify-content: space-between
+
+            .form-group
+              width: 32%
+              margin-bottom: -4px
 
         .form-group
-          width: 32%
-          margin-bottom: -4px
+          .checkbox-container
+            .circle
+              position: relative
 
-    .main-information
-      .form-group
-        .checkbox-container
-          .circle
-            position: relative
+              label
+                background-color: #fff
+                border-radius: 50%
+                cursor: pointer
+                height: 24px
+                width: 24px
+                display: block
+                box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25)
 
-            label
-              background-color: #fff
-              border: 1px solid #ccc
-              border-radius: 50%
-              cursor: pointer
-              height: 24px
-              width: 24px
-              display: block
+                &:after
+                  border: 2px solid #fff
+                  border-top: none
+                  border-right: none
+                  content: ""
+                  height: 6px
+                  left: 6px
+                  opacity: 0
+                  position: absolute
+                  top: 6px
+                  transform: rotate(-45deg)
+                  width: 10px
 
-              &:after
-                border: 2px solid #fff
-                border-top: none
-                border-right: none
-                content: ""
-                height: 6px
-                left: 7px
+              input[type="checkbox"]
+                visibility: hidden
+                display: none
                 opacity: 0
-                position: absolute
-                top: 7px
-                transform: rotate(-45deg)
-                width: 10px
 
-            input[type="checkbox"]
-              visibility: hidden
-              display: none
-              opacity: 0
+                &:checked + label
+                  background-color: #50A49A
+                  border-color: #50A49A
 
-              &:checked + label
-                background-color: #50A49A
-                border-color: #50A49A
+                &:checked + label:after
+                  opacity: 1
 
-              &:checked + label:after
-                opacity: 1
+        .checkbox-group
+          min-height: 26px !important
+          max-height: 26px !important
+          display: flex
+          flex-direction: row !important
+          align-items: center !important
+          justify-content: flex-start !important
 
-      .checkbox-group
-        display: flex
-        flex-direction: row !important
-        align-items: center
-
-        .checkbox-title
-          margin-left: 6px
+          .checkbox-title
+            margin-left: 6px
 
 @media (max-width: 640px)
   .wrapper
