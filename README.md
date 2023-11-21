@@ -1,19 +1,12 @@
-# client-creation-form
+# Client-Creation-Form
+A simple client form with custom selectors and input data validation.
 
-## Project setup
-```
-npm install
-```
+## Stack
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+- Vue2 
+- JavaScript
+- SASS
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Start Locally
+1. Install all the dependencies. Use: `npm install`
+2. Use `npm start` to start at localhost:8080
