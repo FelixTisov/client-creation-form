@@ -45,6 +45,7 @@
         type="text"
         id="series"
         placeholder="Серия"
+        @input="checkSeriesAndNumber('series')"
       />
       <div class="form-group-footer"></div>
     </div>
@@ -56,6 +57,8 @@
         type="text"
         id="number"
         placeholder="Номер"
+        @input="checkSeriesAndNumber('number')"
+        @keydown.space.prevent
       />
       <div class="form-group-footer"></div>
     </div>
@@ -67,6 +70,7 @@
         type="text"
         id="issuedBy"
         placeholder="Кем выдан"
+        @input="checkIssuedBy"
       />
       <div class="form-group-footer"></div>
     </div>
@@ -118,8 +122,27 @@ export default {
     }
   },
   methods: {
+    // Изменение типа документа
     changeDocumentType(option) {
       this.passport.documentType = option
+    },
+    // Проверка серии и номера
+    checkSeriesAndNumber(field) {
+      let value = this.passport[field]
+      let formatted = value.replace(/[^0-9]/g, '')
+      this.passport[field] = formatted
+    },
+    // Проверка поля "кем выдан"
+    checkIssuedBy() {
+      let value = this.passport.issuedBy
+      let formatted = value.replace(
+        /[^a-zA-Zа-яА-ЯёЁ'.0-9-]|([.'-])(?=\s)|(?<=(\.|-|'))(?=[.\s'])|(?<=(\.|-|'))(?=\s)|(?<![.'-])([.'-]){2}|(^|(?<=[.'-]))(?=[.'-])|(?<=[.'-])(?=[.'-])|(?<=[.'-])(\s)(?=[.'-])|^[\s.'-]/g,
+        (match) =>
+          match[0] === '-' || match[0] === '.' || match[0] === "'"
+            ? match[0]
+            : ' '
+      )
+      this.passport.issuedBy = formatted
     },
   },
 }

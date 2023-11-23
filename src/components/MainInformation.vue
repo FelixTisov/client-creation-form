@@ -238,14 +238,17 @@ export default {
     }
   },
   methods: {
+    // Выбор лечащего врача
     changeAttendingDoctor(option) {
       this.mainInformation.attendingDoctor = option
     },
+    // Выбор группы клиента
     changeClientGroup(option) {
       const index = this.mainInformation.clientGroup.indexOf(option)
       if (index === -1) this.mainInformation.clientGroup.push(option)
       else this.mainInformation.clientGroup.splice(index, 1)
     },
+    // Форматирование номера телефона
     formatPhone() {
       let value = this.mainInformation.phoneNumber
 
@@ -260,15 +263,18 @@ export default {
         this.mainInformation.phoneNumber = ''
       else this.mainInformation.phoneNumber = value.substring(0, 12)
     },
+    // Форматирование для полей, которые могут включать только буквы
     formatDefaultTextInput(field) {
       let value = this.mainInformation[field]
       let formatted = value.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '')
       this.mainInformation[field] = formatted
     },
+    // Форматирование для имени и фамилии, которые могут включать символ "-"
     formatName(field) {
       let value = this.mainInformation[field]
-      let formatted = value.replace(/-{2,}| {2,}/g, (match) =>
-        match[0] === '-' ? '-' : ' '
+      let formatted = value.replace(
+        /[^a-zA-Zа-яА-ЯёЁ-]|-{2,}| (?= )| -(?= )| (?=-)| (?=\s)|-(?=\s)|^[\s-]/g,
+        (match) => (match[0] === '-' ? '-' : ' ')
       )
       this.mainInformation[field] = formatted
     },
