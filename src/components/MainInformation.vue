@@ -11,6 +11,7 @@
             type="text"
             id="lastName"
             placeholder="Фамилия*"
+            @input="formatName('lastName')"
           />
           <div class="form-group-footer">
             <span
@@ -29,6 +30,7 @@
             type="text"
             id="firstName"
             placeholder="Имя*"
+            @input="formatName('firstName')"
           />
           <div class="form-group-footer">
             <span
@@ -46,6 +48,7 @@
             type="text"
             id="middleName"
             placeholder="Отчество"
+            @input="formatDefaultTextInput('middleName')"
           />
           <div class="form-group-footer"></div>
         </div>
@@ -73,17 +76,16 @@
       <label>Номер телефона*</label>
       <input
         @blur="v$.mainInformation.phoneNumber.$touch"
-        v-model.trim="formattedPhoneNumber"
+        v-model.trim="mainInformation.phoneNumber"
         type="tel"
         id="phoneNumber"
-        placeholder="+7 (___) ___ - ___"
+        placeholder="+7XXXXXXXXX"
+        @keydown.space.prevent
+        @input="formatPhone"
       />
       <div class="form-group-footer">
-        <!-- <span v-if="v$.mainInformation.phoneNumber.$error" class="error-message"
-        >Обязательное поле</span
-      > -->
         <span v-if="v$.mainInformation.phoneNumber.$error" class="error-message"
-          >Номер телефона должен начинаться с 7 и содержать 11 цифр</span
+          >Номер телефона должен содержать 11 цифр</span
         >
       </div>
     </div>
@@ -96,6 +98,7 @@
         type="text"
         id="gender"
         placeholder="Мужской"
+        @input="formatDefaultTextInput('gender')"
       />
       <div class="form-group-footer"></div>
     </div>
@@ -227,8 +230,8 @@ export default {
         birthDate: { required },
         phoneNumber: {
           required,
-          minLength: minLength(18),
-          maxLength: maxLength(18),
+          minLength: minLength(12),
+          maxLength: maxLength(12),
         },
         clientGroup: { required },
       },
@@ -243,31 +246,31 @@ export default {
       if (index === -1) this.mainInformation.clientGroup.push(option)
       else this.mainInformation.clientGroup.splice(index, 1)
     },
-  },
-  computed: {
-    // Форматирование номера телефона
-    formattedPhoneNumber: {
-      get() {
-        return this.mainInformation.phoneNumber
-      },
-      set(value) {
-        if (this.mainInformation.phoneNumber.length < 18) {
-          const newValue = value.replace(/[^\d]/g, '') // Удаляем все символы, кроме цифр
-          let formatted = '+7 (' + newValue.substring(1, 4)
+    formatPhone() {
+      let value = this.mainInformation.phoneNumber
 
-          if (newValue.length > 3) {
-            formatted += ') ' + newValue.substring(4, 7)
-          }
-          if (newValue.length > 6) {
-            formatted += ' ' + newValue.substring(7, 9)
-          }
-          if (newValue.length > 8) {
-            formatted += '-' + newValue.substring(9)
-          }
-
-          this.mainInformation.phoneNumber = formatted
+      if (value.length < 12 && value.length > 1) {
+        const newValue = value.replace(/[^\d]/g, '') // Удаляем все символы, кроме цифр
+        let formatted = '+7' + newValue.substring(1, 2)
+        if (newValue.length > 2) {
+          formatted += newValue.substring(2, 12)
         }
-      },
+        this.mainInformation.phoneNumber = formatted
+      } else if (value.length === 1 && value[0] === '+')
+        this.mainInformation.phoneNumber = ''
+      else this.mainInformation.phoneNumber = value.substring(0, 12)
+    },
+    formatDefaultTextInput(field) {
+      let value = this.mainInformation[field]
+      let formatted = value.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '')
+      this.mainInformation[field] = formatted
+    },
+    formatName(field) {
+      let value = this.mainInformation[field]
+      let formatted = value.replace(/-{2,}| {2,}/g, (match) =>
+        match[0] === '-' ? '-' : ' '
+      )
+      this.mainInformation[field] = formatted
     },
   },
 }
