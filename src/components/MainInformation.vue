@@ -7,7 +7,7 @@
         <div class="form-group">
           <input
             @blur="v$.mainInformation.lastName.$touch"
-            v-model="v$.mainInformation.lastName.$model"
+            v-model.trim="v$.mainInformation.lastName.$model"
             type="text"
             id="lastName"
             placeholder="Фамилия*"
@@ -25,7 +25,7 @@
         <div class="form-group">
           <input
             @blur="v$.mainInformation.firstName.$touch"
-            v-model="v$.mainInformation.firstName.$model"
+            v-model.trim="v$.mainInformation.firstName.$model"
             type="text"
             id="firstName"
             placeholder="Имя*"
@@ -42,7 +42,7 @@
         <!-- Отчество -->
         <div class="form-group">
           <input
-            v-model="mainInformation.middleName"
+            v-model.trim="mainInformation.middleName"
             type="text"
             id="middleName"
             placeholder="Отчество"
@@ -57,7 +57,7 @@
       <label>Дата рождения*</label>
       <input
         @blur="v$.mainInformation.birthDate.$touch"
-        v-model="v$.mainInformation.birthDate.$model"
+        v-model.trim="v$.mainInformation.birthDate.$model"
         type="date"
         id="birthdate"
       />
@@ -73,7 +73,7 @@
       <label>Номер телефона*</label>
       <input
         @blur="v$.mainInformation.phoneNumber.$touch"
-        v-model="formattedPhoneNumber"
+        v-model.trim="formattedPhoneNumber"
         type="tel"
         id="phoneNumber"
         placeholder="+7 (___) ___ - ___"
@@ -92,7 +92,7 @@
     <div class="form-group">
       <label>Пол</label>
       <input
-        v-model="mainInformation.gender"
+        v-model.trim="mainInformation.gender"
         type="text"
         id="gender"
         placeholder="Мужской"
@@ -180,7 +180,7 @@
       <div class="checkbox-container">
         <div class="circle">
           <input
-            v-model="mainInformation.doNotSendSMS"
+            v-model.trim="mainInformation.doNotSendSMS"
             type="checkbox"
             id="checkbox-18"
           />
@@ -350,11 +350,23 @@ export default {
   .wrapper
     .form-container
       .client-form
-        .client-name-container
-          min-width: 100%
-          max-width: 100%
-          .client-name
-            flex-direction: column
-            .form-group
-              width: 100%
+        .curentPageContainer
+          .main-information
+            .client-name-container
+              min-width: 320px
+              width: 85%
+              max-width: 640px
+
+              label
+                width: 100%
+                font-size: 18px
+              .client-name
+                flex-direction: column
+
+                .form-group
+                  min-width: 100%
+                  max-width: 100%
+                  min-height: 75px
+                  max-height: 75px
+                  margin-bottom: 20px
 </style>

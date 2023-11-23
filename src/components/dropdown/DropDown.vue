@@ -119,4 +119,20 @@ export default {
     border-radius: 15px
     z-index: 8
     box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.2)
+@media (max-width: 640px)
+  .dropdown
+    width: 100%
+    height: fit-content
+    .dropdown_header
+      min-height: 47px
+      max-height: 47px
+
+      input[type="text"]
+
+      .dropdown-icon
+        width: 15px
+        height: 8.67px
+    .dropdown_body
+      margin-top: 56px
+      height: 132px
 </style>

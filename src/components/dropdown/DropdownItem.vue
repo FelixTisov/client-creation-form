@@ -56,4 +56,9 @@ export default {
 .drop-item_current
   p
     color: #50A49A
+
+@media (max-width: 640px)
+  .drop-item
+    p
+      font-size: 18px
 </style>
