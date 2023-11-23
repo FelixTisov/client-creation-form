@@ -129,7 +129,7 @@ export default {
     // Проверка серии и номера
     checkSeriesAndNumber(field) {
       let value = this.passport[field]
-      let formatted = value.replace(/[^0-9]/g, '')
+      let formatted = value.replace(/[^0-9\s]|(\s){2,}/g, '')
       this.passport[field] = formatted
     },
     // Проверка поля "кем выдан"

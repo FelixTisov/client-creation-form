@@ -104,24 +104,25 @@ export default {
   methods: {
     // Обработчик кнопки "далее"
     async navigateNext() {
-      let isFormCorrect = false
+      // let isFormCorrect = false
 
-      switch (this.currentIndex) {
-        case 0:
-          isFormCorrect = await this.$refs.mainInformation.v$.$validate()
-          this.clientData.mainInformation =
-            this.$refs.mainInformation.$data.mainInformation
-          break
+      // switch (this.currentIndex) {
+      //   case 0:
+      //     isFormCorrect = await this.$refs.mainInformation.v$.$validate()
+      //     this.clientData.mainInformation =
+      //       this.$refs.mainInformation.$data.mainInformation
+      //     break
 
-        case 1:
-          isFormCorrect = await this.$refs.addressInformation.v$.$validate()
-          this.clientData.address = this.$refs.addressInformation.$data.address
-          break
+      //   case 1:
+      //     isFormCorrect = await this.$refs.addressInformation.v$.$validate()
+      //     this.clientData.address = this.$refs.addressInformation.$data.address
+      //     break
 
-        default:
-          break
-      }
-      if (isFormCorrect && this.currentIndex < 2) this.currentIndex++
+      //   default:
+      //     break
+      // }
+      // if (isFormCorrect && this.currentIndex < 2)
+      this.currentIndex++
     },
     // Обработчик кнопки "назад"
     navigatePrevious() {
