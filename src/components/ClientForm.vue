@@ -17,7 +17,7 @@
           :keep-alive="true"
           class="curentPageContainer"
         >
-          <AdressInformation ref="addressInformation" />
+          <AddressInformation ref="addressInformation" />
         </div>
 
         <!-- Паспорт клиента -->
@@ -40,21 +40,21 @@
         <div class="buttons-container">
           <!-- Кнопка Назад -->
           <button
-            v-if="currentIndex > 0 && currentIndex < 3"
+            v-show="currentIndex > 0 && currentIndex < 3"
             @click="navigatePrevious"
+            type="button"
           >
             Назад
           </button>
 
           <!-- Кнопка Далее -->
-          <button v-if="currentIndex < 2" @click="navigateNext">Далее</button>
+          <button v-show="currentIndex < 2" @click="navigateNext" type="button">
+            Далее
+          </button>
 
           <!-- Кнопка Создать -->
-          <button v-if="currentIndex === 2" type="submit">Создать</button>
+          <button v-show="currentIndex === 2" type="submit">Создать</button>
         </div>
-
-        <!-- Сообщение об успешном создании клиента -->
-        <p v-if="isSuccess">Клиент успешно создан!</p>
       </form>
     </div>
   </div>
@@ -62,12 +62,12 @@
 
 <script>
 import MainInformation from './MainInformation.vue'
-import AdressInformation from './AdressInformation.vue'
+import AddressInformation from './AddressInformation.vue'
 import PassportInformation from './PassportInformation.vue'
 
 export default {
   name: 'ClientForm',
-  components: { MainInformation, AdressInformation, PassportInformation },
+  components: { MainInformation, AddressInformation, PassportInformation },
   data() {
     return {
       clientData: {
@@ -98,11 +98,11 @@ export default {
           issueDate: '', // Дата выдачи
         },
       },
-      currentIndex: 0,
-      isSuccess: false,
+      currentIndex: 0, // Номер текущей страницы формы
     }
   },
   methods: {
+    // Обработчик кнопки "далее"
     async navigateNext() {
       let isFormCorrect = false
 
@@ -115,27 +115,24 @@ export default {
 
         case 1:
           isFormCorrect = await this.$refs.addressInformation.v$.$validate()
-          this.clientData.address = this.$refs.addressInformation.$data.adress
+          this.clientData.address = this.$refs.addressInformation.$data.address
           break
 
         default:
           break
       }
       if (isFormCorrect && this.currentIndex < 2) this.currentIndex++
-      console.log(this.currentIndex)
     },
+    // Обработчик кнопки "назад"
     navigatePrevious() {
       if (this.currentIndex > 0) this.currentIndex--
-      console.log(this.currentIndex)
     },
+    // Обработчик создания формы
     async createClient() {
-      if (this.currentIndex === 2) {
-        let isFormCorrect = await this.$refs.passportInformation.v$.$validate()
-        if (isFormCorrect) {
-          this.clientData.passport =
-            this.$refs.passportInformation.$data.passport
-          this.currentIndex++
-        }
+      let isFormCorrect = await this.$refs.passportInformation.v$.$validate()
+      if (isFormCorrect) {
+        this.clientData.passport = this.$refs.passportInformation.$data.passport
+        this.currentIndex++
       }
     },
   },
@@ -192,7 +189,7 @@ export default {
         min-height: 500px
         max-height: 500px
 
-        .main-information, .adress-information, .passport-information
+        .main-information, .address-information, .passport-information
           display: flex
           position: relative
           width: 85%
@@ -302,112 +299,11 @@ export default {
         min-height: 50px
         max-height: 50px
 
-      button
-        width: 95px
-        height: 40px
-        text-align: center
-        background-color: #50A49A
-        color: #fff
-        border: none
-        border-radius: 10px
-        cursor: pointer
-        font-size: 16px
-        font-family: 'Roboto'
-        font-weight: 400
-        letter-spacing: 1.6px
-        margin-left: 26px
-        margin-right: 26px
-
-@media (max-width: 640px)
-  .wrapper
-    min-width: 320px
-    width: 100%
-    max-width: 640px
-    background-image: none
-
-    .form-container
-      min-width: 320px
-      width: 100%
-      max-width: 640px
-      height: 1000px
-      border-radius: 0
-      filter: none
-
-      .client-form
-        min-width: 320px
-        width: 100%
-        max-width: 640px
-
-        .main-information, .adress-information, .passport-information
-          min-width: 100vw
-          max-width: 100vw
-          min-height: 800px
-          max-height: 800px
-
-          .form-group
-            min-width: 85%
-            max-width: 58%
-            height: 90px
-            margin-bottom: 20px
-
-            .SMS-checkbox
-              display: flex
-              align-items: center
-              justify-content: flex-start
-              height: 30px
-
-              label
-                margin-left: 6px
-
-              input[type='checkbox']
-                width: 30px
-                height: 30px
-
-            input,
-            select
-              width: 100%
-              min-height: 50px
-              max-height: 50px
-              box-sizing: border-box
-              padding: 8px
-              border: 1px solid #ccc
-              border-radius: 8px
-              font-family: 'Roboto'
-              font-weight: 400
-              outline: none
-
-            .error-message
-              color: red
-              font-family: 'Roboto'
-              font-weight: 300
-              font-size: 16px
-
-          .comment-container
-            display: flex
-            align-items: center
-            justify-content: flex-start
-            width: 90%
-            height: 30px
-            margin-bottom: 15px
-            padding-left: 6px
-            box-sizing: border-box
-
-            p
-              font-size: 14px
-              font-family: 'Roboto'
-              font-weight: 300
-
-        .buttons-container
-          display: flex
-          align-items: flex-end
-          justify-content: center
-          width: 350px
-          height: 60px
-
         button
           width: 95px
           height: 40px
           text-align: center
+          padding: 0
           background-color: #50A49A
           color: #fff
           border: none
@@ -419,4 +315,126 @@ export default {
           letter-spacing: 1.6px
           margin-left: 26px
           margin-right: 26px
+
+@media (max-width: 640px)
+  .wrapper
+    margin: 0
+    padding: 0
+    min-width: 320px
+    width: 100%
+    max-width: 640px
+    min-height: 1200px
+    max-height: 1200px
+    background-image: none
+
+    .form-container
+      margin: 0
+      padding: 0
+      display: flex
+      flex-direction: column
+      align-items: center
+      justify-content: center
+      min-width: 320px
+      width: 100%
+      max-width: 640px
+      height: 100%
+      border-radius: 0
+      filter: none
+
+      .client-form
+        margin: 0
+        padding: 0
+        justify-content: flex-start
+        min-width: 320px
+        width: 100%
+        max-width: 640px
+        height: 100%
+        margin-top: 30px
+
+        label
+          min-height: 25px
+          max-height: 25px
+          font-size: 18px
+
+        .curentPageContainer
+          align-items: flex-start
+          min-width: 320px
+          width: 100%
+          max-width: 640px
+          min-height: 960px
+          max-height: 960px
+
+          .main-information, .address-information, .passport-information
+            min-width: 100vw
+            max-width: 100vw
+            min-height: 800px
+            max-height: 800px
+
+            .form-group
+              min-width: 85%
+              max-width: 58%
+              margin-bottom: 20px
+              min-height: 100px
+              max-height: 100px
+
+              .dropdown-container
+                display: flex
+                align-items: center
+                justify-content: center
+                min-height: 50px
+                max-height: 50px
+
+              .SMS-checkbox
+                input[type='checkbox']
+                  width: 30px
+                  height: 30px
+
+              input,
+              select
+                min-height: 50px
+                max-height: 50px
+                font-size: 18px
+
+              .form-group-footer
+                min-height: 25px
+                max-height: 25px
+
+                .error-message
+                  font-size: 16px
+
+        .comment-container
+          min-width: 320px
+          width: 85%
+          max-width: 640px
+          min-height: 70px
+          max-height: 70px
+          margin-bottom: 0px
+          padding-left: 0
+
+          p
+            font-size: 18px
+
+        .buttons-container
+          min-width: 320px
+          width: 100%
+          max-width: 640px
+          min-height: 70px
+          max-height: 70px
+
+          button
+            width: 120px
+            height: 50px
+            padding: 0
+            text-align: center
+            background-color: #50A49A
+            color: #fff
+            border: none
+            border-radius: 10px
+            cursor: pointer
+            font-size: 22px
+            font-family: 'Roboto'
+            font-weight: 400
+            letter-spacing: 1.6px
+            margin-left: 26px
+            margin-right: 26px
 </style>

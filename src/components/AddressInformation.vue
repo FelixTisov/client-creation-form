@@ -1,11 +1,11 @@
 <template>
-  <div class="adress-information">
+  <div class="address-information">
     <div class="form-group label-group"><label>Адрес клиента</label></div>
 
     <!-- Индекс -->
     <div class="form-group">
       <input
-        v-model.trim="adress.index"
+        v-model.trim="address.index"
         type="text"
         id="index"
         placeholder="Индекс"
@@ -16,7 +16,7 @@
     <!-- Страна -->
     <div class="form-group">
       <input
-        v-model.trim="adress.country"
+        v-model.trim="address.country"
         type="text"
         id="country"
         placeholder="Страна"
@@ -27,7 +27,7 @@
     <!-- Область -->
     <div class="form-group">
       <input
-        v-model.trim="adress.region"
+        v-model.trim="address.region"
         type="text"
         id="region"
         placeholder="Область"
@@ -38,13 +38,13 @@
     <!-- Город -->
     <div class="form-group">
       <input
-        v-model.trim="adress.city"
+        v-model.trim="address.city"
         type="text"
         id="city"
         placeholder="Город*"
       />
       <div class="form-group-footer">
-        <span v-if="v$.adress.city.$error" class="error-message"
+        <span v-if="v$.address.city.$error" class="error-message"
           >Обязательное поле</span
         >
       </div>
@@ -53,7 +53,7 @@
     <!-- Улица -->
     <div class="form-group">
       <input
-        v-model.trim="adress.street"
+        v-model.trim="address.street"
         type="text"
         id="street"
         placeholder="Улица"
@@ -64,7 +64,7 @@
     <!-- Дом -->
     <div class="form-group">
       <input
-        v-model.trim="adress.house"
+        v-model.trim="address.house"
         type="text"
         id="house"
         placeholder="Дом"
@@ -79,13 +79,13 @@ import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {
-  name: 'AdressInformation',
+  name: 'AddressInformation',
   setup() {
     return { v$: useVuelidate() }
   },
   data() {
     return {
-      adress: {
+      address: {
         index: '', // Индекс
         country: '', // Страна
         region: '', // Область
@@ -99,7 +99,7 @@ export default {
   },
   validations() {
     return {
-      adress: {
+      address: {
         city: { required },
       },
     }

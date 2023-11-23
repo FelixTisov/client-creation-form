@@ -7,10 +7,11 @@
         <div class="form-group">
           <input
             @blur="v$.mainInformation.lastName.$touch"
-            v-model="v$.mainInformation.lastName.$model"
+            v-model.trim="v$.mainInformation.lastName.$model"
             type="text"
             id="lastName"
             placeholder="Фамилия*"
+            @input="formatName('lastName')"
           />
           <div class="form-group-footer">
             <span
@@ -25,10 +26,11 @@
         <div class="form-group">
           <input
             @blur="v$.mainInformation.firstName.$touch"
-            v-model="v$.mainInformation.firstName.$model"
+            v-model.trim="v$.mainInformation.firstName.$model"
             type="text"
             id="firstName"
             placeholder="Имя*"
+            @input="formatName('firstName')"
           />
           <div class="form-group-footer">
             <span
@@ -42,10 +44,11 @@
         <!-- Отчество -->
         <div class="form-group">
           <input
-            v-model="mainInformation.middleName"
+            v-model.trim="mainInformation.middleName"
             type="text"
             id="middleName"
             placeholder="Отчество"
+            @input="formatDefaultTextInput('middleName')"
           />
           <div class="form-group-footer"></div>
         </div>
@@ -57,7 +60,7 @@
       <label>Дата рождения*</label>
       <input
         @blur="v$.mainInformation.birthDate.$touch"
-        v-model="v$.mainInformation.birthDate.$model"
+        v-model.trim="v$.mainInformation.birthDate.$model"
         type="date"
         id="birthdate"
       />
@@ -73,17 +76,16 @@
       <label>Номер телефона*</label>
       <input
         @blur="v$.mainInformation.phoneNumber.$touch"
-        v-model="formattedPhoneNumber"
+        v-model.trim="mainInformation.phoneNumber"
         type="tel"
         id="phoneNumber"
-        placeholder="+7 (___) ___ - ___"
+        placeholder="+7XXXXXXXXX"
+        @keydown.space.prevent
+        @input="formatPhone"
       />
       <div class="form-group-footer">
-        <!-- <span v-if="v$.mainInformation.phoneNumber.$error" class="error-message"
-        >Обязательное поле</span
-      > -->
         <span v-if="v$.mainInformation.phoneNumber.$error" class="error-message"
-          >Номер телефона должен начинаться с 7 и содержать 11 цифр</span
+          >Номер телефона должен содержать 11 цифр</span
         >
       </div>
     </div>
@@ -92,10 +94,11 @@
     <div class="form-group">
       <label>Пол</label>
       <input
-        v-model="mainInformation.gender"
+        v-model.trim="mainInformation.gender"
         type="text"
         id="gender"
         placeholder="Мужской"
+        @input="formatDefaultTextInput('gender')"
       />
       <div class="form-group-footer"></div>
     </div>
@@ -180,7 +183,7 @@
       <div class="checkbox-container">
         <div class="circle">
           <input
-            v-model="mainInformation.doNotSendSMS"
+            v-model.trim="mainInformation.doNotSendSMS"
             type="checkbox"
             id="checkbox-18"
           />
@@ -227,8 +230,8 @@ export default {
         birthDate: { required },
         phoneNumber: {
           required,
-          minLength: minLength(18),
-          maxLength: maxLength(18),
+          minLength: minLength(12),
+          maxLength: maxLength(12),
         },
         clientGroup: { required },
       },
@@ -243,31 +246,31 @@ export default {
       if (index === -1) this.mainInformation.clientGroup.push(option)
       else this.mainInformation.clientGroup.splice(index, 1)
     },
-  },
-  computed: {
-    // Форматирование номера телефона
-    formattedPhoneNumber: {
-      get() {
-        return this.mainInformation.phoneNumber
-      },
-      set(value) {
-        if (this.mainInformation.phoneNumber.length < 18) {
-          const newValue = value.replace(/[^\d]/g, '') // Удаляем все символы, кроме цифр
-          let formatted = '+7 (' + newValue.substring(1, 4)
+    formatPhone() {
+      let value = this.mainInformation.phoneNumber
 
-          if (newValue.length > 3) {
-            formatted += ') ' + newValue.substring(4, 7)
-          }
-          if (newValue.length > 6) {
-            formatted += ' ' + newValue.substring(7, 9)
-          }
-          if (newValue.length > 8) {
-            formatted += '-' + newValue.substring(9)
-          }
-
-          this.mainInformation.phoneNumber = formatted
+      if (value.length < 12 && value.length > 1) {
+        const newValue = value.replace(/[^\d]/g, '') // Удаляем все символы, кроме цифр
+        let formatted = '+7' + newValue.substring(1, 2)
+        if (newValue.length > 2) {
+          formatted += newValue.substring(2, 12)
         }
-      },
+        this.mainInformation.phoneNumber = formatted
+      } else if (value.length === 1 && value[0] === '+')
+        this.mainInformation.phoneNumber = ''
+      else this.mainInformation.phoneNumber = value.substring(0, 12)
+    },
+    formatDefaultTextInput(field) {
+      let value = this.mainInformation[field]
+      let formatted = value.replace(/[^a-zA-Zа-яА-ЯёЁ]/g, '')
+      this.mainInformation[field] = formatted
+    },
+    formatName(field) {
+      let value = this.mainInformation[field]
+      let formatted = value.replace(/-{2,}| {2,}/g, (match) =>
+        match[0] === '-' ? '-' : ' '
+      )
+      this.mainInformation[field] = formatted
     },
   },
 }
@@ -350,11 +353,23 @@ export default {
   .wrapper
     .form-container
       .client-form
-        .client-name-container
-          min-width: 100%
-          max-width: 100%
-          .client-name
-            flex-direction: column
-            .form-group
-              width: 100%
+        .curentPageContainer
+          .main-information
+            .client-name-container
+              min-width: 320px
+              width: 85%
+              max-width: 640px
+
+              label
+                width: 100%
+                font-size: 18px
+              .client-name
+                flex-direction: column
+
+                .form-group
+                  min-width: 100%
+                  max-width: 100%
+                  min-height: 75px
+                  max-height: 75px
+                  margin-bottom: 20px
 </style>
